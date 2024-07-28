@@ -499,82 +499,92 @@
             });
         }
 
-        function displayResults() {
-            let resultHTML = `
-                <h2>您的依戀類型結果</h2>
-                <div class="score-chart">
-                    <div class="bar" style="height: ${scoreA * 2}px;">A: ${scoreA}</div>
-                    <div class="bar" style="height: ${scoreB * 2}px;">B: ${scoreB}</div>
-                    <div class="bar" style="height: ${scoreC * 2}px;">C: ${scoreC}</div>
-                </div>
-                <p>A: 安全型依戀 - ${scoreA}分</p>
-                <p>B: 焦慮型依戀 - ${scoreB}分</p>
-                <p>C: 逃避型依戀 - ${scoreC}分</p>
-            `;
+         function getDiagnosis() {
+            let diagnosis = { type: "", description: "" };
 
-            let diagnosis = getDiagnosis();
-            resultHTML += `
-                <div class="type-description">
-                    <h3>您的依戀類型: ${diagnosis.type}</h3>
-                    <p>${diagnosis.description}</p>
-                </div>
-            `;
-
-            if (diagnosis.secondaryType) {
-                resultHTML += `
-                    <div class="type-description">
-                        <h3>次要依戀類型: ${diagnosis.secondaryType}</h3>
-                        <p>${diagnosis.secondaryDescription}</p>
-                    </div>
-                `;
+            // 安全型
+            if (scoreA > scoreB && scoreA > scoreC) {
+                if (scoreB >= 5 && scoreB > scoreC) {
+                    diagnosis.type = "安全・焦慮型";
+                } else if (scoreC >= 5 && scoreC > scoreB) {
+                    diagnosis.type = "安全・逃避型";
+                } else {
+                    diagnosis.type = "安全型";
+                }
+            }
+            // 焦慮型
+            else if (scoreB > scoreA && scoreB > scoreC) {
+                if (scoreA >= 5 && scoreB >= scoreA) {
+                    diagnosis.type = "焦慮・安全型";
+                } else {
+                    diagnosis.type = "焦慮型";
+                }
+            }
+            // 逃避型
+            else if (scoreC > scoreA && scoreC > scoreB) {
+                if (scoreA >= 5 && scoreC >= scoreA) {
+                    diagnosis.type = "逃避・安全型";
+                } else {
+                    diagnosis.type = "逃避型";
+                }
+            }
+            // 恐懼・逃避型
+            else if (scoreB > scoreA && scoreC > scoreA && Math.abs(scoreB - scoreC) <= 2) {
+                diagnosis.type = "恐懼・逃避型";
             }
 
-            resultContainer.innerHTML = resultHTML;
-            resultContainer.style.display = 'block';
-            resultContainer.scrollIntoView({ behavior: 'smooth' });
-        }
+            diagnosis.description = getTypeDescription(diagnosis.type);
 
-        function getDiagnosis() {
-            let scores = [
-                { type: "安全型", score: scoreA },
-                { type: "焦慮型", score: scoreB },
-                { type: "逃避型", score: scoreC }
-            ];
-            scores.sort((a, b) => b.score - a.score);
-
-            let primaryType = scores[0].type;
-            let secondaryType = null;
-            let diagnosis = { type: primaryType, description: getTypeDescription(primaryType) };
-
-            if (scores[0].score >= 15) {
-                diagnosis.description += " 您的這種依戀形式傾向非常強。";
-            } else if (scores[0].score >= 10) {
-                diagnosis.description += " 您的這種依戀形式傾向相當強。";
-            }
-
-            if (scores[0].score - scores[1].score >= 5) {
-                diagnosis.description += ` 這明顯高於其他類型（${scores[1].type}：${scores[1].score}分，${scores[2].type}：${scores[2].score}分）。`;
-            } else if (scores[1].score > 5) {
-                secondaryType = scores[1].type;
-                diagnosis.secondaryType = secondaryType;
-                diagnosis.secondaryDescription = getTypeDescription(secondaryType);
-                diagnosis.description += ` 但${secondaryType}（${scores[1].score}分）也有不可忽視的影響。`;
-            }
+          
 
             return diagnosis;
         }
 
         function getTypeDescription(type) {
-            switch(type) {
+            switch (type) {
                 case "安全型":
-                    return "您傾向於在親密關係中感到舒適和安全。您能夠輕鬆地與他人建立親密關係,同時也能保持自主性。";
+                    return "您傾向於安全型依戀。依戀焦慮和依戀逃避的分數都偏低，是最穩定的形式。您能夠在親密關係中感到舒適和安全，輕鬆地與他人建立親密關係，同時也能保持自主性。";
+                case "安全・焦慮型":
+                    return "您傾向於安全・焦慮型依戀。可以看出依戀焦慮的傾向，但整體而言仍屬穩定。";
+                case "安全・逃避型":
+                    return "您傾向於安全・逃避型依戀。可以看出依戀逃避的傾向，但整體而言仍屬穩定。";
                 case "焦慮型":
-                    return "您在關係中可能會感到不安全,渴望親密但同時也擔心被拒絕或放棄。您可能會過度關注關係,並尋求過多的肯定。";
+                    return "您傾向於焦慮型依戀。這表示您有強烈的依戀焦慮，對人際關係較為敏感。您在關係中可能會感到不安全，渴望親密但同時也擔心被拒絕或放棄。";
+                case "焦慮・安全型":
+                    return "您傾向於焦慮・安全型依戀。具有強烈的依戀焦慮，同時也具備一定適應力。";
                 case "逃避型":
-                    return "您可能會對親密關係感到不舒服,傾向於保持情感距離。您可能重視獨立性,並可能難以完全信任或依賴他人。";
+                    return "您傾向於逃避型依戀。這表示您有強烈的依戀逃避，不容易與人建立親密關係。您可能會對親密關係感到不舒服，傾向於保持情感距離。";
+                case "逃避・安全型":
+                    return "您傾向於逃避・安全型依戀。具有強烈的依戀逃避，同時也具備一定適應力。";
+                case "恐懼・逃避型":
+                    return "您傾向於恐懼・逃避型依戀。依戀焦慮和依戀逃避的傾向都很強，敏感、容易受傷，疑心病重的類型。";
                 default:
                     return "無法確定具體類型。";
             }
+        }
+
+        function displayResults() {
+            let resultHTML = `
+        <h2>您的依戀類型結果</h2>
+        <div class="score-chart">
+            <div class="bar" style="height: ${scoreA * 2}px;">A: ${scoreA}</div>
+            <div class="bar" style="height: ${scoreB * 2}px;">B: ${scoreB}</div>
+            <div class="bar" style="height: ${scoreC * 2}px;">C: ${scoreC}</div>
+        </div>
+        <p>A: 安全型依戀 - ${scoreA}分</p>
+        <p>B: 焦慮型依戀 - ${scoreB}分</p>
+        <p>C: 逃避型依戀 - ${scoreC}分</p>
+    `;
+            let diagnosis = getDiagnosis();
+            resultHTML += `
+        <div class="type-description">
+            <h3>您的依戀類型: ${diagnosis.type}</h3>
+            <p>${diagnosis.description}</p>
+        </div>
+    `;
+            resultContainer.innerHTML = resultHTML;
+            resultContainer.style.display = 'block';
+            resultContainer.scrollIntoView({ behavior: 'smooth' });
         }
 
         submitButton.addEventListener('click', function () {

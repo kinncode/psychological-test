@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>依戀形式診斷測驗</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f4f8;
+        }
+
+        h1, h2{
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        #quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #ecf0f1;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .question:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .question p {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #34495e;
+            margin-bottom: 15px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            position: relative;
+            padding: 10px 15px;
+            background-color: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            background-color: #e9ecef;
+            border-color: #ced4da;
+        }
+
+        .option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .option label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .option label::after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ced4da;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .option input[type="radio"]:checked + label {
+            font-weight: bold;
+            color: #2980b9;
+        }
+
+        .option input[type="radio"]:checked + label::after {
+            background-color: #3498db;
+            border-color: #3498db;
+            box-shadow: inset 0 0 0 4px #fff;
+        }
+
+        #submit-button {
+            display: block;
+            width: 200px;
+            margin: 30px auto;
+            padding: 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        #submit-button:hover {
+            background-color: #2980b9;
+            transform: scale(1.05);
+        }
+
+        #result-container {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2c3e50;
+            padding: 20px;
+            background-color: #e8f4fd;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+            
+        }
+        .score-chart {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            height: 200px;
+            margin-bottom: 20px;}
+        .bar {
+            width: 60px;
+            background-color: #3498db;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            color: white;
+            font-weight: bold;
+            transition: height 0.5s ease-in-out;
+        }
+        .type-description {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+        }
+        
+    </style>
+</head>
+
+<body>
+    <h1>依戀形式診斷測驗</h1>
+    <div id="quiz-container">
+        <!-- 問題和選項將動態添加到這裡 -->
+    </div>
+
+    <button id="submit-button">提交答案</button>
+
+    <div id="result-container">
+        <!-- 顯示分數的容器 -->
+    </div>
+    <script>
+        const questions = [
+            "1. 你是積極嘗試新事物，勇於前往沒去過的地方，認識新朋友的人嗎？",
+
+            "2. 你無論和誰都能馬上熟稔，放鬆心情相處嗎？",
+
+            "3. 遇上麻煩時，你會樂觀地認為「總有辦法解決」嗎？",
+
+            "4. 打從心底信任親近的朋友或熟人嗎？",
+
+            "5. 個性上有容易指責別人，攻擊性強的傾向嗎？",
+
+            "6. 初次嘗試新事情時，容易感到不安嗎？",
+
+            "7. 你的父母(養育者)有時會對你冷淡嗎？",
+
+            "8. 你認為人會在緊急時刻背叛或不可靠嗎？",
+
+            "9. 你的父母(養育者)批評你的時候比嘉許你的時候多嗎？",
+
+            "10. 回憶童年時代，開心的記憶比較多嗎？",
+
+            "11. 你非常感謝你的父母(養育者)嗎？",
+
+            "12. 難過的時候，只要想起父母或家人，心情就能平靜下來嗎？",
+
+            "13. 即使對方不在身邊，你也能長久惦記著一個人嗎？還是馬上就會尋求別人的陪伴？",
+
+            "14. 你是好惡分明的人嗎？",
+
+            "15. 曾經認為某個人是非常好的人，最後卻產生幻滅的心情或開始討厭對方嗎？",
+
+            "16. 你是曾常感覺煩躁或沮喪的人嗎？",
+
+            "17. 認為自己沒有什麼值得一提的優點嗎？",
+
+            "18. 曾因懷疑自己被拒絕而陷入焦慮嗎？",
+
+            "19. 比起優點，總是忍不住在意缺點嗎？",
+
+            "20. 你是對自己有自信的人嗎？",
+
+            "21. 你是能不依賴別人，自己作出決定或採取行動的人嗎？",
+
+            "22. 你認為自己是沒什麼人愛的人嗎？",
+
+            "23. 遇到討厭的事情時，會放在心上很久嗎？",
+
+            "24. 你的父母(養育者)經常做出傷害你的事嗎？",
+
+            "25. 你曾經對父母(養育者)懷有憤怒或怨恨的心情嗎？",
+
+            "26. 難過的時候，你會希望身邊的人上前關心嗎？或者難過的時候，你不希望身邊的人上前關心？",
+
+            "27. 親密的人際關係，對你而言是重要的嗎？",
+
+            "28. 你總是冷靜無情嗎？",
+
+            "29. 你是否不喜歡太親暱的交友關係？",
+
+            "30. 和曾經有交情的人分開後，馬上就會忘記對方嗎？",
+
+            "31. 比起與人交往，認為自己的世界更重要嗎？",
+
+            "32. 認為只有自己的力量才可靠嗎？",
+
+            "33. 不怎麼懷念過去嗎？",
+
+            "34. 你是感情不輕易表現在臉上的人嗎？",
+
+            "35. 你認為即使是戀人或是配偶也不能侵犯你的隱私權嗎？",
+
+            "36. 你喜歡和親密的人肌膚相親，喜歡擁抱或肢體接觸嗎？還是不怎麼喜歡？",
+
+            "37. 幼年時的事記得很清楚嗎？還是大部份都不記得了？",
+
+            "38. 即使和關係親近的人在一起，還是會客套嗎？",
+
+            "39. 你認為遇到困難的時候，別人會好心幫助自己嗎？",
+
+            "40. 你是輕易就會接受別人好意的人嗎？",
+
+            "41. 你曾因為害怕失敗而逃避挑戰嗎？",
+
+            "42. 與人分離時，你感覺非常悲傷，內心激動嗎？",
+
+            "43. 你不喜歡別人煩你，最好一個人自由自在地生活？",
+
+            "44. 對你而言，「工作及學業」和「戀愛及人際關係」，哪一邊比較重要？",
+
+            "45. 你受傷或沮喪的時候，別人的安慰或傾聽有多重要？"
+        ];
+
+        const options = [
+            ["(1) 是", "(2) 否", "(3) 兩者皆非"],
+            ["(1) 是", "(2) 否", "(3) 兩者皆非"],
+
+            ["(1) 是", "(2) 否", "(3) 兩者皆非"],
+
+            ["(1) 是", "(2) 否", "(3) 兩者皆非"],
+
+            ["(1) 是", "(2) 否", "(3) 兩者皆非"],
+
+            ["(1) 是", "(2) 否", "(3) 兩者皆非"],
+
+            ["(1) 是", "(2) 否", "(3) 兩者皆非"],
+
+            ["(1) 是", "(2) 否", "(3) 兩者皆非"],
+
+            ["(1) 是", "(2) 否", "(3) 兩者皆非"],
+
+            ["(1) 是", "(2) 否", "(3) 兩者皆非"],
+
+            ["(1) 是", "(2) 否", "(3) 兩者皆非"],
+
+            ["(1) 是", "(2) 否", "(3) 兩者皆非"],
+
+            ["(1) 能長久惦記一個人", "(2) 馬上就會尋求別人的陪伴", "(3) 兩者皆非"],
+
+            ["(1) 是", "(2) 否", "(3) 兩者皆非"],
+
+            ["(1) 經常如此", "(2) 不常如此", "(3) 兩者皆非"],
+
+            ["(1) 經常如此", "(2) 不常如此", "(3) 兩者皆非"],
+
+            ["(1) 經常如此", "(2) 不常如此", "(3) 兩者皆非"],
+
+            ["(1) 經常如此", "(2) 不常如此", "(3) 兩者皆非"],
+
+            ["(1) 是", "(2) 否", "(3) 兩者皆非"],
+
+            ["(1) 是", "(2) 否", "(3) 兩者皆非"],
+
+            ["(1) 是", "(2) 否", "(3) 兩者皆非"],
+
+            ["(1) 是", "(2) 否", "(3) 兩者皆非"],
+
+            ["(1) 是", "(2) 否", "(3) 兩者皆非"],
+
+            ["(1) 是", "(2) 否", "(3) 兩者皆非"],
+
+            ["(1) 是", "(2) 否", "(3) 兩者皆非"],
+
+            ["(1) 需要關心", "(2) 不需要關心", "(3) 兩者皆非"],
+
+            ["(1) 非常重要", "(2) 不怎麼重要", "(3) 兩者皆非"],
+
+            ["(1) 是", "(2) 否", "(3) 兩者皆非"],
+
+            ["(1) 是", "(2) 否", "(3) 兩者皆非"],
+
+            ["(1) 是", "(2) 否", "(3) 兩者皆非"],
+
+            ["(1) 是", "(2) 否", "(3) 兩者皆非"],
+
+            ["(1) 是", "(2) 否", "(3) 兩者皆非"],
+
+            ["(1) 是", "(2) 否", "(3) 兩者皆非"],
+
+            ["(1) 是", "(2) 否", "(3) 兩者皆非"],
+
+            ["(1) 是", "(2) 否", "(3) 兩者皆非"],
+
+            ["(1) 喜歡", "(2) 不怎麼喜歡", "(3) 兩者皆非"],
+
+            ["(1) 記得很清楚", "(2) 大部分都不記得", "(3) 兩者皆非"],
+
+            ["(1) 是", "(2) 否", "(3) 兩者皆非"],
+
+            ["(1) 是", "(2) 否", "(3) 兩者皆非"],
+
+            ["(1) 是", "(2) 否", "(3) 兩者皆非"],
+
+            ["(1) 是", "(2) 否", "(3) 兩者皆非"],
+
+            ["(1) 是", "(2) 否", "(3) 兩者皆非"],
+
+            ["(1) 是", "(2) 否", "(3) 兩者皆非"],
+
+            ["(1) 工作及學業", "(2) 戀愛與人際關係", "(3) 兩者皆非"],
+
+            ["(1) 非常重要", "(2) 不怎麼重要", "(3) 兩者皆非"]
+
+        ];
+
+        let answers = [];; // 用戶的答案，例如：[1, 2, 1, 1, 2, ...]
+
+        let scoreA = 0;
+        let scoreB = 0;
+        let scoreC = 0;
+        let hasSubmitted = false;
+
+        const scoringRules = {
+            1: { 1: { A: 1 } },
+            2: { 1: { A: 1 } },
+            3: { 1: { A: 1 }, 2: { C: 2 } },
+
+            4: { 1: { A: 1 } },
+
+            5: { 2: { A: 2 } },
+
+            6: { 2: { A: 2 } },
+
+            7: { 2: { A: 2 } },
+
+            8: { 2: { A: 2 } },
+
+            9: { 2: { A: 2 } },
+
+            10: { 1: { A: 1 }, 2: { B: 2 } },
+
+            11: { 1: { A: 1 }, 2: { B: 2 } },
+
+            12: { 1: { A: 1 }, 2: { B: 2 } },
+
+            13: { 1: { A: 1 }, 2: { B: 2 } },
+
+            14: { 1: { B: 1 } },
+
+            15: { 1: { B: 1 } },
+
+            16: { 1: { B: 1 } },
+
+            17: { 1: { B: 1 } },
+
+            18: { 1: { B: 1 } },
+
+            19: { 1: { B: 1 } },
+
+            20: { 2: { B: 2 } },
+
+            21: { 2: { B: 2 } },
+
+            22: { 2: { A: 2 }, 1: { B: 1 } },
+
+            23: { 2: { A: 2 }, 1: { B: 1 } },
+
+            24: { 2: { A: 2 }, 1: { B: 1 } },
+
+            25: { 2: { A: 2 }, 1: { B: 1 } },
+
+            26: { 2: { C: 2 } },
+
+            27: { 2: { C: 2 } },
+
+            28: { 1: { C: 1 } },
+
+            29: { 1: { C: 1 } },
+
+            30: { 1: { C: 1 } },
+
+            31: { 1: { C: 1 } },
+
+            32: { 1: { C: 1 } },
+
+            33: { 1: { C: 1 } },
+
+            34: { 1: { C: 1 } },
+
+            35: { 1: { C: 1 } },
+
+            36: { 2: { C: 2 } },
+
+            37: { 2: { C: 2 } },
+
+            38: { 2: { A: 2 }, 1: { B: 1 } },
+
+            39: { 1: { A: 1 }, 2: { C: 2 } },
+
+            40: { 1: { A: 1 }, 2: { C: 2 } },
+
+            41: { 1: { C: 1 } },
+
+            42: { 1: { B: 1 }, 2: { C: 2 } },
+
+            43: { 2: { B: 2 }, 1: { C: 1 } },
+
+            44: { 2: { B: 2 }, 1: { C: 1 } },
+
+            45: { 2: { C: 2 } }
+        };
+
+        const quizContainer = document.getElementById('quiz-container');
+        const submitButton = document.getElementById('submit-button');
+        const resultContainer = document.getElementById('result-container');
+
+        function createQuiz() {
+            questions.forEach((question, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('question');
+                questionDiv.innerHTML = `<p>${question}</p>`;
+
+                const optionsDiv = document.createElement('div');
+                optionsDiv.classList.add('options');
+
+                options[index].forEach((option, optionIndex) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.classList.add('option');
+                    optionDiv.innerHTML = `
+                        <input type="radio" id="q${index}o${optionIndex}" name="q${index}" value="${optionIndex + 1}">
+                        <label for="q${index}o${optionIndex}">${option}</label>
+                    `;
+                    optionsDiv.appendChild(optionDiv);
+                });
+
+                questionDiv.appendChild(optionsDiv);
+                quizContainer.appendChild(questionDiv);
+            });
+        }
+
+        function calculateScores() {
+            scoreA = 0;
+            scoreB = 0;
+            scoreC = 0;
+            answers.forEach((answer, index) => {
+                const questionNumber = index + 1;
+                const rule = scoringRules[questionNumber][answer];
+
+                if (rule) {
+                    if (rule.A) scoreA += rule.A;
+                    if (rule.B) scoreB += rule.B;
+                    if (rule.C) scoreC += rule.C;
+                }
+            });
+        }
+
+        function displayResults() {
+            let resultHTML = `
+                <h2>您的依戀類型結果</h2>
+                <div class="score-chart">
+                    <div class="bar" style="height: ${scoreA * 2}px;">A: ${scoreA}</div>
+                    <div class="bar" style="height: ${scoreB * 2}px;">B: ${scoreB}</div>
+                    <div class="bar" style="height: ${scoreC * 2}px;">C: ${scoreC}</div>
+                </div>
+                <p>A: 安全型依戀 - ${scoreA}分</p>
+                <p>B: 焦慮型依戀 - ${scoreB}分</p>
+                <p>C: 逃避型依戀 - ${scoreC}分</p>
+            `;
+
+            let diagnosis = getDiagnosis();
+            resultHTML += `
+                <div class="type-description">
+                    <h3>您的依戀類型: ${diagnosis.type}</h3>
+                    <p>${diagnosis.description}</p>
+                </div>
+            `;
+
+            if (diagnosis.secondaryType) {
+                resultHTML += `
+                    <div class="type-description">
+                        <h3>次要依戀類型: ${diagnosis.secondaryType}</h3>
+                        <p>${diagnosis.secondaryDescription}</p>
+                    </div>
+                `;
+            }
+
+            resultContainer.innerHTML = resultHTML;
+            resultContainer.style.display = 'block';
+            resultContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function getDiagnosis() {
+            let scores = [
+                { type: "安全型", score: scoreA },
+                { type: "焦慮型", score: scoreB },
+                { type: "逃避型", score: scoreC }
+            ];
+            scores.sort((a, b) => b.score - a.score);
+
+            let primaryType = scores[0].type;
+            let secondaryType = null;
+            let diagnosis = { type: primaryType, description: getTypeDescription(primaryType) };
+
+            if (scores[0].score >= 15) {
+                diagnosis.description += " 您的這種依戀形式傾向非常強。";
+            } else if (scores[0].score >= 10) {
+                diagnosis.description += " 您的這種依戀形式傾向相當強。";
+            }
+
+            if (scores[0].score - scores[1].score >= 5) {
+                diagnosis.description += ` 這明顯高於其他類型（${scores[1].type}：${scores[1].score}分，${scores[2].type}：${scores[2].score}分）。`;
+            } else if (scores[1].score > 5) {
+                secondaryType = scores[1].type;
+                diagnosis.secondaryType = secondaryType;
+                diagnosis.secondaryDescription = getTypeDescription(secondaryType);
+                diagnosis.description += ` 但${secondaryType}（${scores[1].score}分）也有不可忽視的影響。`;
+            }
+
+            return diagnosis;
+        }
+
+        function getTypeDescription(type) {
+            switch(type) {
+                case "安全型":
+                    return "您傾向於在親密關係中感到舒適和安全。您能夠輕鬆地與他人建立親密關係,同時也能保持自主性。";
+                case "焦慮型":
+                    return "您在關係中可能會感到不安全,渴望親密但同時也擔心被拒絕或放棄。您可能會過度關注關係,並尋求過多的肯定。";
+                case "逃避型":
+                    return "您可能會對親密關係感到不舒服,傾向於保持情感距離。您可能重視獨立性,並可能難以完全信任或依賴他人。";
+                default:
+                    return "無法確定具體類型。";
+            }
+        }
+
+        submitButton.addEventListener('click', function () {
+            const inputs = document.querySelectorAll('input[type="radio"]:checked');
+
+            if (inputs.length < questions.length) {
+                alert('請回答所有問題！');
+                return;
+            }
+            if (hasSubmitted) {
+                if (!confirm('您已經提交過答案了。是否要重新計算分數？')) {
+                    return;
+                }
+            }
+
+            answers = []; // 清空之前的答案
+            inputs.forEach(input => {
+                answers.push(parseInt(input.value));
+            });
+
+            calculateScores();
+            displayResults();
+            hasSubmitted = true;
+            submitButton.textContent = '重新計算分數';
+        });
+
+        createQuiz();
+    </script>
+    
+
+</body>
+
+</html>

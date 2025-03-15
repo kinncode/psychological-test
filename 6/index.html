@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>愛的旅程 - 心靈的相遇</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- 添加Google字體 - 適合朗讀主題的優雅字體 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* 全局樣式 - 適合溫柔愛情主題 */
+        body {
+            font-family: 'Noto Serif TC', serif;
+            background-color: #fdfaf7; /* 更柔和的米色背景 */
+            color: #333;
+            background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><path d="M50 10 Q60 0, 70 10 T90 10 Q100 20, 90 30 T70 30 Q60 40, 50 30 T30 30 Q20 20, 30 10 T50 10" fill="none" stroke="%23f0e6e0" stroke-width="1"/></svg>');
+            background-size: 100px 100px;
+            background-repeat: repeat;
+            background-attachment: fixed;
+        }
+        
+        /* 簡化頁面載入動畫 */
+        .fade-in {
+            opacity: 0;
+            transition: opacity 0.4s ease-out; /* 簡化過渡效果 */
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+        }
+        
+        /* 修改標題樣式，更符合溫柔愛情主題 */
+        header {
+            background: linear-gradient(135deg, #e8c4c4, #d3a5a5); /* 柔和的粉紅色漸變 */
+            padding: 2rem 1rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        h1, h2, h3, h4 {
+            font-weight: 600;
+            color: #9e7676; /* 柔和的褐紅色標題 */
+        }
+        
+        header h1, header h2 {
+            color: #fff; /* 頭部標題為白色 */
+        }
+        
+        /* 添加裝飾元素 - 更含蓄的圖標 */
+        header h1:before {
+            content: '♡';
+            display: inline-block;
+            margin-right: 10px;
+            font-size: 1.2em;
+            opacity: 0.8;
+        }
+        
+        /* 修改班級選擇器樣式 */
+        .class-selector {
+            position: relative;
+            z-index: 10;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .class-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 30px;
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 0.6rem 1.5rem;
+            margin: 0 0.5rem;
+            transition: background-color 0.2s ease;
+            font-family: 'Noto Serif TC', serif;
+        }
+        
+        .class-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .class-btn.active {
+            background-color: white;
+            color: #b68686;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* 添加含蓄裝飾 */
+        .works-container:before {
+            content: '♡ ∞ ♡';
+            display: block;
+            text-align: center;
+            font-size: 1.2rem;
+            color: #d3b5b5;
+            margin-bottom: 1rem;
+            letter-spacing: 10px;
+            opacity: 0.7;
+        }
+        
+        /* 修復標題樣式 */
+        .works-container h3 {
+            text-align: center;
+            position: relative;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            color: #9e7676;
+        }
+        
+        .works-container h3:after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(to right, #e8c4c4, #d3a5a5);
+            margin: 0.8rem auto 0;
+        }
+        
+        /* 優化作品卡片樣式 - 使用類而不是直接操作樣式 */
+        .work-item {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: #fff;
+            border: 1px solid #f0e6e0;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
+            position: relative;
+        }
+        
+        .work-item:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, transparent 50%, #f0e6e0 50%);
+            border-radius: 0 0 12px 0;
+        }
+        
+        .work-item.hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(158, 118, 118, 0.1);
+        }
+        
+        .student-name {
+            background: linear-gradient(to right, #e8c4c4, #d3a5a5);
+            color: white;
+            padding: 0.8rem 1rem;
+            text-align: center;
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+        
+        .work-title {
+            padding: 1rem;
+            text-align: center;
+            font-weight: 500;
+            font-size: 1.1rem;
+            color: #9e7676;
+            border-top: 1px solid #f0e6e0;
+        }
+        
+        /* 作品標題添加含蓄裝飾 */
+        .work-title:before {
+            content: '';
+            margin-right: 3px;
+        }
+        
+        .work-title:after {
+            content: '';
+            margin-left: 3px;
+        }
+        
+        /* 組別標題樣式 */
+        .group-header {
+            background: linear-gradient(135deg, #e8c4c4, #d3a5a5);
+            color: white;
+            padding: 1rem 2rem;
+            margin: 2.5rem 0 1rem 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .group-header.hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(158, 118, 118, 0.1);
+        }
+        
+        .group-header h4 {
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* 視頻容器樣式 */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 比例 */
+            height: 0;
+            overflow: hidden;
+            background-color: #000; /* 黑色背景 */
+            border-bottom: 2px solid #e8c4c4; /* 添加底部邊框 */
+        }
+        
+        /* 視頻容器添加含蓄裝飾 */
+        .video-container:before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 20px;
+            height: 20px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ffffff"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+            opacity: 0.4;
+            z-index: 10;
+        }
+        
+        /* 添加回到頂部按鈕樣式 */
+        #back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e8c4c4, #d3a5a5);
+            color: white;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 1000;
+        }
+        
+        #back-to-top.visible {
+            opacity: 0.8;
+        }
+        
+        #back-to-top:hover {
+            background: linear-gradient(135deg, #dbb6b6, #c99797);
+            opacity: 1;
+        }
+        
+        /* 頁腳樣式 */
+        footer {
+            background-color: #9e7676;
+            color: #f8f0f0;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        /* 添加裝飾 */
+        footer:before {
+            content: '♡ ∞ ♡';
+            display: block;
+            text-align: center;
+            font-size: 1rem;
+            color: #f8f0f0;
+            margin-bottom: 1rem;
+            letter-spacing: 10px;
+            opacity: 0.7;
+        }
+        
+        /* 添加響應式設計 */
+        @media (max-width: 768px) {
+            .works-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .class-selector {
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            
+            #back-to-top {
+                width: 40px;
+                height: 40px;
+                bottom: 20px;
+                right: 20px;
+                font-size: 20px;
+            }
+        }
+        .api-demo {
+            padding: 2rem;
+            background-color: #f5f5f5;
+            margin-top: 2rem;
+        }
+        .api-players {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-top: 1rem;
+            justify-content: center;
+        }
+        .api-players > div {
+            flex: 1;
+            min-width: 300px;
+            max-width: 500px;
+            margin-bottom: 2rem;
+        }
+        .thumbnail-player {
+            position: relative;
+            width: 480px;
+            height: 270px;
+            background-image: url('https://img.youtube.com/vi/a971SRPJphM/maxresdefault.jpg');
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+            max-width: 100%;
+        }
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 68px;
+            height: 48px;
+            background-color: rgba(0,0,0,0.7);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .play-button::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 10px 0 10px 20px;
+            border-color: transparent transparent transparent #fff;
+        }
+        .thumbnail-player:hover .play-button {
+            background-color: #ff0000;
+        }
+        .video-js {
+            width: 100%;
+            height: 270px;
+        }
+        iframe {
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 class="fade-in">愛的旅程</h1>
+        <h2 class="fade-in">心靈的相遇 - 愛情七階段</h2>
+        
+        <nav class="class-selector">
+            <button class="class-btn active" data-class="class-a">甲班</button>
+            <button class="class-btn" data-class="class-b">乙班</button>
+            <button class="class-btn" data-class="class-c">丙班</button>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="class-a" class="works-container active">
+            <h3 class="fade-in">甲班愛情旅程作品</h3>
+            
+            <!-- 第一組 -->
+            <div class="group-header fade-in">
+                <h4>第一組 - 相識與吸引</h4>
+                <p class="group-members">組員：王小明、李小華、張小美、陳小強</p>
+            </div>
+            <div class="works-grid">
+                <div class="work-item">
+                    <div class="student-name">王小明</div>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/IVjbXojnu9I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <div class="work-title">初見</div>
+                </div>
+                
+                <div class="work-item">
+                    <div class="student-name">李小華</div>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <div class="work-title">目光交會</div>
+                </div>
+                
+                <div class="work-item">
+                    <div class="student-name">張小美</div>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <div class="work-title">心動時刻</div>
+                </div>
+                
+                <div class="work-item">
+                    <div class="student-name">陳小強</div>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <div class="work-title">吸引力</div>
+                </div>
+            </div>
+            
+            <!-- 第二組 -->
+            <div class="group-header fade-in">
+                <h4>第二組 - 熱戀與迷戀</h4>
+                <p class="group-members">組員：林小玲、吳小龍、周小芳、黃小傑、劉小婷</p>
+            </div>
+            <div class="works-grid">
+                <div class="work-item">
+                    <div class="student-name">林小玲</div>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <div class="work-title">熱戀</div>
+                </div>
+                
+                <div class="work-item">
+                    <div class="student-name">吳小龍</div>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <div class="work-title">迷戀</div>
+                </div>
+                
+                <div class="work-item">
+                    <div class="student-name">周小芳</div>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <div class="work-title">甜蜜時光</div>
+                </div>
+                
+                <div class="work-item">
+                    <div class="student-name">黃小傑</div>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <div class="work-title">心醉神迷</div>
+                </div>
+                
+                <div class="work-item">
+                    <div class="student-name">劉小婷</div>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <div class="work-title">沉醉</div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="class-b" class="works-container">
+            <h3 class="fade-in">乙班愛情旅程作品</h3>
+            
+            <!-- 第一組 -->
+            <div class="group-header fade-in">
+                <h4>第一組 - 矛盾與衝突</h4>
+                <p class="group-members">組員：張大明、李大華、王大美、陳大強、林大玲</p>
+            </div>
+            <div class="works-grid">
+                <div class="work-item">
+                    <div class="student-name">張大明</div>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <div class="work-title">分歧</div>
+                </div>
+                
+                <div class="work-item">
+                    <div class="student-name">李大華</div>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <div class="work-title">衝突</div>
+                </div>
+                
+                <div class="work-item">
+                    <div class="student-name">王大美</div>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <div class="work-title">考驗</div>
+                </div>
+                
+                <div class="work-item">
+                    <div class="student-name">陳大強</div>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <div class="work-title">磨合</div>
+                </div>
+                
+                <div class="work-item">
+                    <div class="student-name">林大玲</div>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <div class="work-title">理解</div>
+                </div>
+            </div>
+            
+            <!-- 第二組 -->
+            <div class="group-header fade-in">
+                <h4>第二組 - 穩定與承諾</h4>
+                <p class="group-members">組員：吳大龍、周大芳、黃大傑、劉大婷</p>
+            </div>
+            <div class="works-grid">
+                <div class="work-item">
+                    <div class="student-name">吳大龍</div>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <div class="work-title">穩定</div>
+                </div>
+                
+                <div class="work-item">
+                    <div class="student-name">周大芳</div>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <div class="work-title">承諾</div>
+                </div>
+                
+                <div class="work-item">
+                    <div class="student-name">黃大傑</div>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <div class="work-title">信任</div>
+                </div>
+                
+                <div class="work-item">
+                    <div class="student-name">劉大婷</div>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/FcmI4g3gNHY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <div class="work-title">依靠</div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="class-c" class="works-container">
+            <h3 class="fade-in">丙班愛情旅程作品</h3>
+            
+            <!-- 第一組 -->
+            <div class="group-header fade-in">
+                <h4>第一組 - 親密與融合</h4>
+                <p class="group-members">組員：陳志明、林美華、張建國、李小芬</p>
+            </div>
+            <div class="works-grid">
+                <div class="work-item">
+                    <div class="student-name">陳志明</div>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <div class="work-title">親密</div>
+                </div>
+                
+                <div class="work-item">
+                    <div class="student-name">林美華</div>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <div class="work-title">融合</div>
+                </div>
+                
+                <div class="work-item">
+                    <div class="student-name">張建國</div>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <div class="work-title">共鳴</div>
+                </div>
+                
+                <div class="work-item">
+                    <div class="student-name">李小芬</div>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <div class="work-title">相知</div>
+                </div>
+            </div>
+            
+            <!-- 第二組 -->
+            <div class="group-header fade-in">
+                <h4>第二組 - 平淡與永恆</h4>
+                <p class="group-members">組員：王俊傑、劉雅婷、吳志豪、黃雅琪、蔡文傑</p>
+            </div>
+            <div class="works-grid">
+                <div class="work-item">
+                    <div class="student-name">王俊傑</div>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <div class="work-title">平淡</div>
+                </div>
+                
+                <div class="work-item">
+                    <div class="student-name">劉雅婷</div>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <div class="work-title">永恆</div>
+                </div>
+                
+                <div class="work-item">
+                    <div class="student-name">吳志豪</div>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <div class="work-title">陪伴</div>
+                </div>
+                
+                <div class="work-item">
+                    <div class="student-name">黃雅琪</div>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <div class="work-title">守候</div>
+                </div>
+                
+                <div class="work-item">
+                    <div class="student-name">蔡文傑</div>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <div class="work-title">靜好</div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <p>© 2023 愛的旅程 - 心靈的相遇 | 版權所有</p>
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
+</html>
+        

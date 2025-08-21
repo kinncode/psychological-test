@@ -1,12 +1,281 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-Hant">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>點我有驚喜</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', 'PingFang TC', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
+            background-size: 400% 400%;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            animation: gradientShift 3s ease infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .container {
+            text-align: center;
+            z-index: 2;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 40px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            animation: slideIn 1s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        h1 {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .loading-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 30px 0;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-text {
+            color: white;
+            font-size: 1.2rem;
+            margin-left: 20px;
+            font-weight: 500;
+            animation: fadeInOut 1.5s ease-in-out infinite;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% {
+                opacity: 0.7;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        .surprise-text {
+            color: white;
+            font-size: 1.1rem;
+            margin-top: 20px;
+            opacity: 0.9;
+            font-style: italic;
+        }
+
+        .floating-particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .particle:nth-child(1) {
+            width: 10px;
+            height: 10px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .particle:nth-child(2) {
+            width: 15px;
+            height: 15px;
+            top: 60%;
+            right: 20%;
+            animation-delay: 1s;
+        }
+
+        .particle:nth-child(3) {
+            width: 8px;
+            height: 8px;
+            top: 80%;
+            left: 30%;
+            animation-delay: 2s;
+        }
+
+        .particle:nth-child(4) {
+            width: 12px;
+            height: 12px;
+            top: 30%;
+            right: 10%;
+            animation-delay: 3s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+                opacity: 0.6;
+            }
+            50% {
+                transform: translateY(-30px) rotate(180deg);
+                opacity: 1;
+            }
+        }
+
+        .audio-control {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            color: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .audio-control:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+                margin: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .loading-spinner {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .loading-text {
+                font-size: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>正在載入...</h1>
-    <audio autoplay>
+    <div class="floating-particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+    
+    <div class="container">
+        <h1>🎉 驚喜即將到來！</h1>
+        <div class="loading-container">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">正在載入驚喜...</div>
+        </div>
+        <p class="surprise-text">請稍候，精彩內容馬上呈現</p>
+        <button class="audio-control" onclick="toggleAudio()">🔊 音效控制</button>
+    </div>
+
+    <audio id="surpriseAudio" autoplay>
         <source src="https://www.myinstants.com/media/sounds/air-horn-club-sample.mp3" type="audio/mpeg">
     </audio>
+
+    <script>
+        let audioEnabled = true;
+        
+        function toggleAudio() {
+            const audio = document.getElementById('surpriseAudio');
+            if (audioEnabled) {
+                audio.pause();
+                audioEnabled = false;
+                document.querySelector('.audio-control').textContent = '🔇 音效已關閉';
+            } else {
+                audio.play();
+                audioEnabled = true;
+                document.querySelector('.audio-control').textContent = '🔊 音效控制';
+            }
+        }
+
+        // 添加一些互動效果
+        document.addEventListener('click', function() {
+            const container = document.querySelector('.container');
+            container.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                container.style.transform = 'scale(1)';
+            }, 150);
+        });
+
+        // 音頻載入完成後的處理
+        document.getElementById('surpriseAudio').addEventListener('canplaythrough', function() {
+            console.log('音頻已準備就緒！');
+        });
+    </script>
 </body>
 </html>

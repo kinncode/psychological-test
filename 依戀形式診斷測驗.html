@@ -6,70 +6,157 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>依戀形式診斷測驗</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f0f4f8;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        h1, h2{
+        body {
+            font-family: 'Microsoft JhengHei', 'PingFang TC', 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.05"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.05"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.05"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.05"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.05"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .main-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+            animation: slideInUp 0.8s ease-out;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1, h2 {
             text-align: center;
             color: #2c3e50;
             margin-bottom: 30px;
-            font-size: 2.5em;
+            font-size: 2.8em;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .header-section h1 {
+            color: white;
+            -webkit-text-fill-color: white;
+            margin-bottom: 15px;
+        }
+
+        .header-section p {
+            font-size: 1.1em;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
         }
 
         #quiz-container {
-            background-color: white;
-            border-radius: 10px;
-            padding: 30px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 40px 30px;
         }
 
         .question {
-            margin-bottom: 30px;
-            padding: 20px;
-            background-color: #ecf0f1;
-            border-radius: 8px;
-            transition: all 0.3s ease;
+            margin-bottom: 35px;
+            padding: 25px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .question::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
         }
 
         .question:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+
+        .question:hover::before {
+            transform: scaleY(1);
         }
 
         .question p {
-            font-size: 1.1em;
-            font-weight: bold;
-            color: #34495e;
-            margin-bottom: 15px;
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            line-height: 1.5;
         }
 
         .options {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
 
         .option {
             position: relative;
-            padding: 10px 15px;
-            background-color: #f8f9fa;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.8);
             border: 2px solid #e9ecef;
-            border-radius: 5px;
+            border-radius: 10px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
         }
 
         .option:hover {
-            background-color: #e9ecef;
-            border-color: #ced4da;
+            background: rgba(102, 126, 234, 0.1);
+            border-color: #667eea;
+            transform: translateX(5px);
         }
 
         .option input[type="radio"] {
@@ -83,95 +170,246 @@
             justify-content: space-between;
             width: 100%;
             cursor: pointer;
+            font-weight: 500;
+            color: #495057;
         }
 
         .option label::after {
             content: '';
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             border: 2px solid #ced4da;
             border-radius: 50%;
             transition: all 0.3s ease;
+            background: white;
         }
 
         .option input[type="radio"]:checked + label {
-            font-weight: bold;
-            color: #2980b9;
+            font-weight: 700;
+            color: #667eea;
         }
 
         .option input[type="radio"]:checked + label::after {
-            background-color: #3498db;
-            border-color: #3498db;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-color: #667eea;
             box-shadow: inset 0 0 0 4px #fff;
         }
 
         #submit-button {
             display: block;
-            width: 200px;
-            margin: 30px auto;
-            padding: 15px;
-            background-color: #3498db;
+            width: 250px;
+            margin: 40px auto;
+            padding: 18px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            border-radius: 25px;
-            font-size: 1.1em;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 1px;
+        }
+
+        #submit-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
         }
 
         #submit-button:hover {
-            background-color: #2980b9;
-            transform: scale(1.05);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        #submit-button:hover::before {
+            left: 100%;
+        }
+
+        #submit-button:active {
+            transform: translateY(-1px) scale(1.01);
         }
 
         #result-container {
-            margin-top: 30px;
+            margin-top: 40px;
             text-align: center;
-            font-size: 1.2em;
-            font-weight: bold;
+            font-size: 1.3em;
+            font-weight: 600;
             color: #2c3e50;
-            padding: 20px;
-            background-color: #e8f4fd;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.05);
-            
+            padding: 30px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 2px solid rgba(102, 126, 234, 0.1);
+            animation: fadeInUp 0.8s ease-out;
         }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .score-chart {
             display: flex;
             justify-content: space-around;
             align-items: flex-end;
-            height: 200px;
-            margin-bottom: 20px;}
+            height: 250px;
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
         .bar {
-            width: 60px;
-            background-color: #3498db;
+            width: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
-            justify-content: center;
-            align-items: flex-end;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
             color: white;
             font-weight: bold;
-            transition: height 0.5s ease-in-out;
+            font-size: 1.1em;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 8px 8px 0 0;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            opacity: 0;
+            transform: scaleY(0);
+            transform-origin: bottom;
         }
-        .type-description {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #ecf0f1;
+
+        .bar::before {
+            content: attr(data-score);
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
             border-radius: 5px;
+            font-size: 0.9em;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .bar:hover::before {
+            opacity: 1;
+        }
+
+        .type-description {
+            margin-top: 25px;
+            padding: 20px;
+            background: linear-gradient(135deg, #ecf0f1 0%, #d5dbdb 100%);
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .progress-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px 20px;
+            border-radius: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .question {
+                padding: 20px;
+                margin-bottom: 25px;
+            }
+            
+            .question p {
+                font-size: 1.1em;
+            }
+            
+            .option {
+                padding: 12px 15px;
+            }
+            
+            #submit-button {
+                width: 200px;
+                padding: 15px 25px;
+                font-size: 1.1em;
+            }
+            
+            .score-chart {
+                height: 200px;
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+            
+            .bar {
+                width: 60px;
+                height: auto !important;
+                min-height: 30px;
+            }
+            
+            .progress-indicator {
+                top: 10px;
+                right: 10px;
+                padding: 10px 15px;
+                font-size: 0.9em;
+            }
         }
         
     </style>
 </head>
 
 <body>
-    <h1>依戀形式診斷測驗</h1>
-    <div id="quiz-container">
-        <!-- 問題和選項將動態添加到這裡 -->
+    <div class="progress-indicator" id="progress-indicator">
+        進度: <span id="progress-text">0/45</span>
     </div>
+    
+    <div class="main-container">
+        <div class="header-section">
+            <h1>依戀形式診斷測驗</h1>
+            <p>透過45個精心設計的問題，深入了解您的依戀模式與人際關係特質</p>
+        </div>
+        
+        <div id="quiz-container">
+            <!-- 問題和選項將動態添加到這裡 -->
+        </div>
 
-    <button id="submit-button">提交答案</button>
+        <button id="submit-button">提交答案</button>
 
-    <div id="result-container">
-        <!-- 顯示分數的容器 -->
+        <div id="result-container">
+            <!-- 顯示分數的容器 -->
+        </div>
     </div>
     <script>
         const questions = [
@@ -463,7 +701,7 @@
             questions.forEach((question, index) => {
                 const questionDiv = document.createElement('div');
                 questionDiv.classList.add('question');
-                questionDiv.innerHTML = `<p>${question}</p>`;
+                questionDiv.innerHTML = `<p><span style="color: #667eea; font-weight: bold;">Q${index + 1}.</span> ${question}</p>`;
 
                 const optionsDiv = document.createElement('div');
                 optionsDiv.classList.add('options');
@@ -475,12 +713,20 @@
                         <input type="radio" id="q${index}o${optionIndex}" name="q${index}" value="${optionIndex + 1}">
                         <label for="q${index}o${optionIndex}">${option}</label>
                     `;
+                    
+                    // 添加选择事件监听器
+                    const radio = optionDiv.querySelector('input[type="radio"]');
+                    radio.addEventListener('change', updateProgress);
+                    
                     optionsDiv.appendChild(optionDiv);
                 });
 
                 questionDiv.appendChild(optionsDiv);
                 quizContainer.appendChild(questionDiv);
             });
+            
+            // 初始化进度
+            updateProgress();
         }
 
         function calculateScores() {
@@ -563,28 +809,85 @@
             }
         }
 
+        function updateProgress() {
+            const answeredCount = document.querySelectorAll('input[type="radio"]:checked').length;
+            const progressText = document.getElementById('progress-text');
+            progressText.textContent = `${answeredCount}/${questions.length}`;
+            
+            // 更新进度指示器的颜色
+            const progressIndicator = document.getElementById('progress-indicator');
+            const percentage = (answeredCount / questions.length) * 100;
+            
+            if (percentage >= 100) {
+                progressIndicator.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
+                progressIndicator.style.color = 'white';
+            } else if (percentage >= 75) {
+                progressIndicator.style.background = 'linear-gradient(135deg, #FF9800, #F57C00)';
+            } else if (percentage >= 50) {
+                progressIndicator.style.background = 'linear-gradient(135deg, #FFC107, #FFA000)';
+            } else {
+                progressIndicator.style.background = 'rgba(255, 255, 255, 0.9)';
+            }
+        }
+
         function displayResults() {
+            const maxScore = Math.max(scoreA, scoreB, scoreC);
+            const maxHeight = 200; // 最大高度
+            
             let resultHTML = `
-        <h2>您的依戀類型結果</h2>
-        <div class="score-chart">
-            <div class="bar" style="height: ${scoreA * 2}px;">A: ${scoreA}</div>
-            <div class="bar" style="height: ${scoreB * 2}px;">B: ${scoreB}</div>
-            <div class="bar" style="height: ${scoreC * 2}px;">C: ${scoreC}</div>
-        </div>
-        <p>A: 安全型依戀 - ${scoreA}分</p>
-        <p>B: 焦慮型依戀 - ${scoreB}分</p>
-        <p>C: 逃避型依戀 - ${scoreC}分</p>
-    `;
+                <h2>🎯 您的依戀類型結果</h2>
+                <div class="score-chart">
+                    <div class="bar" style="height: ${(scoreA / maxScore) * maxHeight}px;" data-score="${scoreA}分">
+                        <div style="margin-bottom: 10px; font-size: 0.9em;">安全型</div>
+                        ${scoreA}
+                    </div>
+                    <div class="bar" style="height: ${(scoreB / maxScore) * maxHeight}px;" data-score="${scoreB}分">
+                        <div style="margin-bottom: 10px; font-size: 0.9em;">焦慮型</div>
+                        ${scoreB}
+                    </div>
+                    <div class="bar" style="height: ${(scoreC / maxScore) * maxHeight}px;" data-score="${scoreC}分">
+                        <div style="margin-bottom: 10px; font-size: 0.9em;">逃避型</div>
+                        ${scoreC}
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-around; margin: 20px 0; flex-wrap: wrap; gap: 15px;">
+                    <div style="background: linear-gradient(135deg, #4CAF50, #45a049); color: white; padding: 15px; border-radius: 10px; text-align: center; min-width: 150px;">
+                        <div style="font-size: 1.2em; font-weight: bold;">安全型依戀</div>
+                        <div style="font-size: 1.5em; font-weight: bold;">${scoreA}分</div>
+                    </div>
+                    <div style="background: linear-gradient(135deg, #FF9800, #F57C00); color: white; padding: 15px; border-radius: 10px; text-align: center; min-width: 150px;">
+                        <div style="font-size: 1.2em; font-weight: bold;">焦慮型依戀</div>
+                        <div style="font-size: 1.5em; font-weight: bold;">${scoreB}分</div>
+                    </div>
+                    <div style="background: linear-gradient(135deg, #9C27B0, #7B1FA2); color: white; padding: 15px; border-radius: 10px; text-align: center; min-width: 150px;">
+                        <div style="font-size: 1.2em; font-weight: bold;">逃避型依戀</div>
+                        <div style="font-size: 1.5em; font-weight: bold;">${scoreC}分</div>
+                    </div>
+                </div>
+            `;
+            
             let diagnosis = getDiagnosis();
             resultHTML += `
-        <div class="type-description">
-            <h3>您的依戀類型: ${diagnosis.type}</h3>
-            <p>${diagnosis.description}</p>
-        </div>
-    `;
+                <div class="type-description">
+                    <h3>🎭 您的依戀類型: ${diagnosis.type}</h3>
+                    <p>${diagnosis.description}</p>
+                </div>
+            `;
+            
             resultContainer.innerHTML = resultHTML;
             resultContainer.style.display = 'block';
             resultContainer.scrollIntoView({ behavior: 'smooth' });
+            
+            // 添加动画效果
+            setTimeout(() => {
+                const bars = document.querySelectorAll('.bar');
+                bars.forEach((bar, index) => {
+                    setTimeout(() => {
+                        bar.style.opacity = '1';
+                        bar.style.transform = 'scaleY(1)';
+                    }, index * 200);
+                });
+            }, 100);
         }
 
         submitButton.addEventListener('click', function () {
